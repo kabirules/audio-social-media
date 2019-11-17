@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { FirebaseAuthentication } from '@ionic-native/firebase-authentication/ngx';
 
 @Component({
   selector: 'app-home',
@@ -7,6 +8,11 @@ import { Component } from '@angular/core';
 })
 export class HomePage {
 
-  constructor() {}
+  constructor(private firebaseAuthentication: FirebaseAuthentication) {}
 
+  public doLogin() {
+    this.firebaseAuthentication.signInWithGoogle('','')
+    .then((res: any) => console.log(res))
+    .catch((error: any) => console.error(error));  
+  }
 }
