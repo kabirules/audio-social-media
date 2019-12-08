@@ -1,5 +1,15 @@
 import { Component } from '@angular/core';
-import { FirebaseAuthentication } from '@ionic-native/firebase-authentication/ngx';
+// Firebase App (the core Firebase SDK) is always required and must be listed first
+import * as firebase from "firebase/app";
+
+// Add the Firebase products that you want to use
+import "firebase/auth";
+import "firebase/firestore";
+import { environment } from 'src/environments/environment';
+import { FormBuilder } from '@angular/forms';
+import { NavController } from '@ionic/angular';
+import { DashboardPage } from '../dashboard/dashboard.page';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -8,11 +18,38 @@ import { FirebaseAuthentication } from '@ionic-native/firebase-authentication/ng
 })
 export class HomePage {
 
-  constructor(private firebaseAuthentication: FirebaseAuthentication) {}
+  provider = new firebase.auth.GoogleAuthProvider();
+  loginForm;
+
+  constructor(private formBuilder: FormBuilder,
+              private navCtrl: NavController,
+              private router: Router) {
+    // Initialize Firebase
+    firebase.initializeApp(environment.firebase);
+    this.provider = new firebase.auth.GoogleAuthProvider();
+    this.loginForm = this.formBuilder.group({
+    });    
+  }
 
   public doLogin() {
-    this.firebaseAuthentication.signInWithGoogle('','')
-    .then((res: any) => console.log(res))
-    .catch((error: any) => console.error(error));  
+    firebase.auth().signInWithPopup(this.provider).then(function(result) {
+      // This gives you a Google Access Token. You can use it to access the Google API.
+      var token = result.credential;//.credential
+      // The signed-in user info.
+      var user = result.user;
+      // ...
+      console.log(user);
+      this.navCtrl.push(DashboardPage);
+      this.router.navigateByUrl('/dashobard');
+    }).catch(function(error) {
+      // Handle Errors here.
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      // The email of the user's account used.
+      var email = error.email;
+      // The firebase.auth.AuthCredential type that was used.
+      var credential = error.credential;
+      // ...
+    });    
   }
 }
