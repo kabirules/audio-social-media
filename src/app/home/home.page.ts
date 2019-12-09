@@ -32,15 +32,13 @@ export class HomePage {
   }
 
   public doLogin() {
-    firebase.auth().signInWithPopup(this.provider).then(function(result) {
+    firebase.auth().signInWithPopup(this.provider).then((result) => {
       // This gives you a Google Access Token. You can use it to access the Google API.
-      var token = result.credential;//.credential
+      var token = result.credential;//.accessToken
       // The signed-in user info.
       var user = result.user;
       // ...
-      console.log(user);
-      this.navCtrl.push(DashboardPage);
-      this.router.navigateByUrl('/dashobard');
+      this.router.navigateByUrl('/dashboard');
     }).catch(function(error) {
       // Handle Errors here.
       var errorCode = error.code;
@@ -50,6 +48,7 @@ export class HomePage {
       // The firebase.auth.AuthCredential type that was used.
       var credential = error.credential;
       // ...
+      console.log(error);
     });    
   }
 }
